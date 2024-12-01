@@ -20,11 +20,19 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.appendChild(twitterScript);
             twitterScript.onload = function() {
                 console.log("Twitter script loaded successfully!");
-                window.twttr.widgets.load();
+                // Manually trigger Twitter widgets load after script is loaded
+                if (window.twttr && window.twttr.widgets) {
+                    window.twttr.widgets.load();
+                    console.log("Twitter widgets manually reloaded");
+                }
             };
         } else {
             console.log("Twitter script already loaded");
-            window.twttr.widgets.load();
+            // If the script is already loaded, manually trigger Twitter widgets load
+            if (window.twttr && window.twttr.widgets) {
+                window.twttr.widgets.load();
+                console.log("Twitter widgets reloaded from existing script");
+            }
         }
     }
 
@@ -103,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         resultsContainer.innerHTML += resultHTML;
                     });
 
-                    // Load the Twitter script at the end of the content rendering
+                    // Load Twitter script to ensure it's ready for embedding tweets
                     loadTwitterScript();
                 } else {
                     resultsContainer.innerHTML = '<p>Error: No valid data in files.json</p>';
