@@ -19,11 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     const searchTags = query.toLowerCase().split(' ').filter(tag => tag.trim() !== '');
 
                     // Filter files that match any of the tags
-                    const filteredFiles = data.filter(file =>
-                        searchTags.some(tag => 
+                    const filteredFiles = data.filter(file => {
+                        const matches = searchTags.some(tag => 
                             file.tags.some(fileTag => fileTag.toLowerCase().includes(tag))
-                        )
-                    );
+                        );
+                        console.log(`Checking file: ${file.name}, Matches: ${matches}`); // Debugging
+                        return matches;
+                    });
 
                     if (filteredFiles.length === 0) {
                         resultsContainer.innerHTML = '<p>No results found.</p>';
@@ -41,13 +43,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else if (file.type === "video") {
                             resultHTML += `<video controls width="300" src="${file.url}"></video>`;
                         } else if (file.type === "youtube") {
-                            // Embed YouTube video
                             const videoId = file.url.split('v=')[1].split('&')[0];
                             resultHTML += `
                                 <iframe width="300" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
                             `;
                         } else if (file.type === "twitter") {
-                            // Embed Twitter/X video
+                            console.log(`Embedding Twitter URL: ${file.url}`); // Debugging
                             resultHTML += `
                                 <blockquote class="twitter-tweet">
                                     <a href="${file.url}"></a>
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         twitterScript.async = true;
                         twitterScript.charset = "utf-8";
                         document.body.appendChild(twitterScript);
+                        console.log("Twitter script loaded");
                     }
                 }
             })
