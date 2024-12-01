@@ -15,14 +15,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 resultsContainer.innerHTML = ''; // Clear previous results
 
                 if (data && Array.isArray(data)) {
-                    // Split the search query into individual tags
-                    const searchTags = query.toLowerCase().split(' ').filter(tag => tag.trim() !== '');
+                    // Split the search query into individual tags and clean spaces
+                    const searchTags = query.toLowerCase().split(' ').map(tag => tag.trim()).filter(tag => tag.length > 0);
+                    console.log("Search Tags: ", searchTags); // Debugging
 
                     // Filter files that match any of the tags
                     const filteredFiles = data.filter(file => {
-                        return searchTags.some(tag => 
-                            file.tags.some(fileTag => fileTag.toLowerCase().includes(tag))
+                        // Clean up the tags for each file by trimming spaces
+                        const fileTags = file.tags.map(tag => tag.toLowerCase().trim());
+                        console.log(`Checking file: ${file.name}, File Tags: ${fileTags}`); // Debugging
+
+                        const matches = searchTags.some(tag => 
+                            fileTags.some(fileTag => fileTag.includes(tag)) // Check if any tag in the query matches any file tag
                         );
+                        console.log(`File: ${file.name}, Matches: ${matches}`); // Debugging
+                        return matches;
                     });
 
                     if (filteredFiles.length === 0) {
