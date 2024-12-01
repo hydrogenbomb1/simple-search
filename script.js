@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set the search bar to the current query
     searchBar.value = searchQuery;
 
-    // Load the Twitter embed script immediately
+    // Load Twitter script immediately when the page loads
     function loadTwitterScript() {
         if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
             const twitterScript = document.createElement('script');
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             twitterScript.async = true;
             twitterScript.charset = "utf-8";
             document.body.appendChild(twitterScript);
-            console.log("Twitter script loaded");
+            console.log("Twitter script loaded early");
         }
     }
 
@@ -94,9 +94,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         resultsContainer.innerHTML += resultHTML;
                     });
 
-                    // Ensure Twitter widgets are rendered after all content is added
-                    window.twttr.widgets.load();
-                    console.log("Twitter widgets reloaded");
+                    // Ensure Twitter's embed script is loaded after content is added
+                    loadTwitterScript();
+
+                    // After the Twitter script is loaded, call the load method
+                    const twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
+                    if (twitterScript) {
+                        twitterScript.onload = function() {
+                            window.twttr.widgets.load();
+                            console.log("Twitter widgets manually reloaded");
+                        };
+                    }
                 } else {
                     resultsContainer.innerHTML = '<p>Error: No valid data in files.json</p>';
                 }
