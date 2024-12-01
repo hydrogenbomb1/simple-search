@@ -66,11 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         resultsContainer.innerHTML += resultHTML;
                     });
 
-                    // Ensure Twitter's embed script runs
-                    if (window.twttr && window.twttr.widgets) {
-                        window.twttr.widgets.load(); // Reload widgets to render tweets
-                        console.log("Twitter widgets reloaded");
-                    } else {
+                    // Ensure Twitter's embed script is loaded after content is added
+                    if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
                         const twitterScript = document.createElement('script');
                         twitterScript.src = "https://platform.twitter.com/widgets.js";
                         twitterScript.async = true;
@@ -78,6 +75,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.body.appendChild(twitterScript);
                         console.log("Twitter script loaded");
                     }
+
+                    // After loading the script, ensure the widgets are rendered
+                    twitterScript.onload = function() {
+                        window.twttr.widgets.load();
+                        console.log("Twitter widgets reloaded");
+                    };
                 }
             })
             .catch(error => {
