@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                console.log('Data fetched successfully:', data); // Debugging
                 resultsContainer.innerHTML = ''; // Clear previous results
 
                 if (data && Array.isArray(data)) {
@@ -27,10 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Filter files that match any of the tags
                     const filteredFiles = data.filter(file => {
-                        // Clean up the tags for each file by trimming spaces
                         const fileTags = file.tags.map(tag => tag.toLowerCase().trim());
-                        console.log(`Checking file: ${file.name}, File Tags: ${fileTags}`); // Debugging
-
                         const matches = searchTags.every(tag => 
                             fileTags.some(fileTag => fileTag.includes(tag)) // Check if every search tag matches a file tag
                         );
@@ -54,17 +50,23 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else if (file.type === "video") {
                             resultHTML += `<video controls width="300" src="${file.url}"></video>`;
                         } else if (file.type === "youtube") {
-                            const videoId = file.url.split('v=')[1].split('&')[0];
-                            resultHTML += `
-                                <iframe width="300" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
-                            `;
+                            const videoId = file.url.split('v=')[1]?.split('&')[0];
+                            if (videoId) {
+                                resultHTML += `
+                                    <iframe width="300" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                                `;
+                            }
                         } else if (file.type === "twitter") {
                             console.log(`Embedding Twitter URL: ${file.url}`);
-                            resultHTML += `
-                                <blockquote class="twitter-tweet">
-                                    <a href="${file.url}"></a>
-                                </blockquote>
-                            `;
+                            if (file.url.includes('x.com')) {
+                                resultHTML += `
+                                    <blockquote class="twitter-tweet">
+                                        <a href="${file.url}"></a>
+                                    </blockquote>
+                                `;
+                            } else {
+                                console.log("Invalid Twitter URL:", file.url);
+                            }
                         } else {
                             resultHTML += `<p>File: ${file.name}</p>`;
                         }
@@ -92,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // After loading the script, ensure the widgets are rendered
                     twitterScript.onload = function() {
-                        window.twttr.widgets.load(); // Re-trigger Twitter widget load
+                        window.twttr.widgets.load();
                         console.log("Twitter widgets reloaded");
                     };
                 } else {
