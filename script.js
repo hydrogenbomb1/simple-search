@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
         fetch('files.json')  // Fetch the JSON data
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load files.json');
+                }
+                return response.json();
+            })
             .then(data => {
                 resultsContainer.innerHTML = ''; // Clear previous results
 
@@ -74,8 +79,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     // Ensure Twitter's embed script is loaded after content is added
-                    if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
-                        const twitterScript = document.createElement('script');
+                    let twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
+                    if (!twitterScript) {
+                        twitterScript = document.createElement('script');
                         twitterScript.src = "https://platform.twitter.com/widgets.js";
                         twitterScript.async = true;
                         twitterScript.charset = "utf-8";
@@ -92,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => {
                 console.error('Error fetching files.json:', error);
-                resultsContainer.innerHTML = '<p>Error loading results.</p>';
+                resultsContainer.innerHTML = `<p>Error loading results: ${error.message}</p>`;
             });
     };
 
