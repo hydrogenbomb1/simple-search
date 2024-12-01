@@ -15,9 +15,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 resultsContainer.innerHTML = ''; // Clear previous results
 
                 if (data && Array.isArray(data)) {
-                    // Filter results based on the search query
+                    // Split the search query into individual tags
+                    const searchTags = query.toLowerCase().split(' ').filter(tag => tag.trim() !== '');
+
+                    // Filter files that match all tags
                     const filteredFiles = data.filter(file =>
-                        file.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+                        searchTags.every(tag => file.tags.some(fileTag => fileTag.toLowerCase().includes(tag)))
                     );
 
                     if (filteredFiles.length === 0) {
@@ -54,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     };
 
-    // Fetch and display results for the current query
+    // Display results based on the current query
     if (searchQuery) {
         fetchAndDisplayResults(searchQuery);
     }
