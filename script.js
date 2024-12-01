@@ -7,6 +7,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set the search bar to the current query
     searchBar.value = searchQuery;
 
+    // Load the Twitter embed script immediately
+    function loadTwitterScript() {
+        if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.src = "https://platform.twitter.com/widgets.js";
+            twitterScript.async = true;
+            twitterScript.charset = "utf-8";
+            document.body.appendChild(twitterScript);
+            console.log("Twitter script loaded");
+        }
+    }
+
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
         fetch('files.json')  // Fetch the JSON data
@@ -82,24 +94,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         resultsContainer.innerHTML += resultHTML;
                     });
 
-                    // Dynamically load the Twitter widget script if not already loaded
-                    if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
-                        const twitterScript = document.createElement('script');
-                        twitterScript.src = "https://platform.twitter.com/widgets.js";
-                        twitterScript.async = true;
-                        twitterScript.charset = "utf-8";
-                        document.body.appendChild(twitterScript);
-                        console.log("Twitter script loaded");
-                    }
-
-                    // After the Twitter script is loaded, call the load method
-                    const twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
-                    if (twitterScript) {
-                        twitterScript.onload = function() {
-                            window.twttr.widgets.load();
-                            console.log("Twitter widgets reloaded");
-                        };
-                    }
+                    // Ensure Twitter widgets are rendered after all content is added
+                    window.twttr.widgets.load();
+                    console.log("Twitter widgets reloaded");
                 } else {
                     resultsContainer.innerHTML = '<p>Error: No valid data in files.json</p>';
                 }
@@ -126,4 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetchAndDisplayResults(newQuery);
         }
     });
+
+    // Load the Twitter script as soon as the page loads
+    loadTwitterScript();
 });
