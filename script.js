@@ -7,6 +7,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set the search bar to the current query
     searchBar.value = searchQuery;
 
+    // Function to load the Twitter widgets.js script
+    function loadTwitterScript() {
+        const existingScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
+        if (!existingScript) {
+            const twitterScript = document.createElement('script');
+            twitterScript.src = "https://platform.twitter.com/widgets.js";
+            twitterScript.async = true;
+            twitterScript.charset = "utf-8";
+            document.body.appendChild(twitterScript);
+            console.log("Twitter script is being loaded...");
+        }
+    }
+
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
         fetch('files.json')  // Fetch the JSON data
@@ -59,10 +72,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else if (file.type === "twitter") {
                             console.log(`Embedding Twitter URL: ${file.url}`);
                             if (file.url.includes('x.com')) {
-                                // Direct iframe embed for Twitter
-                                const tweetId = file.url.split('/').pop(); // Extract tweet ID from URL
                                 resultHTML += `
-                                    <iframe width="300" height="500" src="https://twitframe.com/show?url=${file.url}" frameborder="0" allowfullscreen></iframe>
+                                    <blockquote class="twitter-tweet">
+                                        <a href="${file.url}"></a>
+                                    </blockquote>
                                 `;
                             } else {
                                 console.log("Invalid Twitter URL:", file.url);
@@ -81,6 +94,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Add the result to the container
                         resultsContainer.innerHTML += resultHTML;
                     });
+
+                    // Ensure Twitter's embed script is loaded after content is added
+                    loadTwitterScript();
+
+                    // After the Twitter script is loaded, call the load method
+                    const twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
+                    if (twitterScript) {
+                        twitterScript.onload = function() {
+                            window.twttr.widgets.load();  // Manually trigger widget load
+                            console.log("Twitter widgets manually reloaded");
+                        };
+                    }
                 } else {
                     resultsContainer.innerHTML = '<p>Error: No valid data in files.json</p>';
                 }
@@ -107,4 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetchAndDisplayResults(newQuery);
         }
     });
+
+    // Load the Twitter script as soon as the page loads
+    loadTwitterScript();
 });
