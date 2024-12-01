@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 `;
                             } else {
                                 console.log("Invalid Twitter URL:", file.url);
+                                resultHTML += `<p>Invalid Twitter URL: ${file.url}</p>`;
                             }
                         } else {
                             resultHTML += `<p>File: ${file.name}</p>`;
