@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         const fileTags = file.tags.map(tag => tag.toLowerCase().trim());
                         console.log(`Checking file: ${file.name}, File Tags: ${fileTags}`); // Debugging
 
-                        const matches = searchTags.some(tag => 
-                            fileTags.some(fileTag => fileTag.includes(tag)) // Check if any tag in the query matches any file tag
+                        const matches = searchTags.every(tag => 
+                            fileTags.some(fileTag => fileTag.includes(tag)) // Check if every search tag matches a file tag
                         );
                         console.log(`File: ${file.name}, Matches: ${matches}`); // Debugging
                         return matches;
