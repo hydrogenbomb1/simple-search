@@ -28,5 +28,23 @@
       "url": "https://www.youtube.com/watch?v=HpzAKjxQxUQ",
       "tags": ["music", "lemon_tree", "youtube"],
       "type": "youtube"
-    }
+    },
+    {
+      "name": "Out of context Polish dub Spongebob",
+      "url": "https://x.com/NoContextPLDub/status/1863024716467826760",
+      "tags": ["out_of_context", "spongebob", "twitter", "dub"],
+      "type": "twitter"
+    },
+  {
+    "name": "Bro was NOT having it 🤣",
+    "url": "https://www.youtube.com/watch?v=63jjVP6yLpI",
+    "tags": ["short", "redshell", "youtube", "funny"],
+    "type": "youtube"
+  },
+  {
+    "name": "The Minecraft movie looks BAD 💀",
+    "url": "https://www.youtube.com/watch?v=b0P4YkRchGY",
+    "tags": ["short", "redshell", "youtube", "funny"],
+    "type": "youtube"
+  }
   ]
