@@ -2,3 +2,5 @@
 
 A simple search thingy.
 :)
+
+Version 1.0
