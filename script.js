@@ -7,6 +7,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set the search bar to the current query
     searchBar.value = searchQuery;
 
+    // Load Twitter widgets script early to ensure it's ready
+    let twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
+    if (!twitterScript) {
+        twitterScript = document.createElement('script');
+        twitterScript.src = "https://platform.twitter.com/widgets.js";
+        twitterScript.async = true;
+        twitterScript.charset = "utf-8";
+        document.body.appendChild(twitterScript);
+        console.log("Twitter script loaded early");
+    }
+
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
         fetch('files.json')  // Fetch the JSON data
@@ -83,17 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     // Ensure Twitter's embed script is loaded after content is added
-                    let twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
-                    if (!twitterScript) {
-                        twitterScript = document.createElement('script');
-                        twitterScript.src = "https://platform.twitter.com/widgets.js";
-                        twitterScript.async = true;
-                        twitterScript.charset = "utf-8";
-                        document.body.appendChild(twitterScript);
-                        console.log("Twitter script loaded");
-                    }
-
-                    // After loading the script, ensure the widgets are rendered
                     twitterScript.onload = function() {
                         window.twttr.widgets.load();
                         console.log("Twitter widgets reloaded");
