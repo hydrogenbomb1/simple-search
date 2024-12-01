@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
-        fetch('files.json')  // Fetch the files.json data
+        fetch('files.json')  // Fetch the JSON data
             .then(response => response.json())
             .then(data => {
                 resultsContainer.innerHTML = ''; // Clear previous results
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Split the search query into individual tags
                     const searchTags = query.toLowerCase().split(' ').filter(tag => tag.trim() !== '');
 
-                    // Filter files that have **any** of the tags in the query
+                    // Filter files that match any of the tags
                     const filteredFiles = data.filter(file =>
                         searchTags.some(tag => 
                             file.tags.some(fileTag => fileTag.toLowerCase().includes(tag))
@@ -41,15 +41,23 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else if (file.type === "video") {
                             resultHTML += `<video controls width="300" src="${file.url}"></video>`;
                         } else if (file.type === "youtube") {
-                            // For YouTube videos, embed the YouTube player
-                            const videoId = file.url.split('v=')[1].split('&')[0]; // Extract video ID from the URL
+                            // Embed YouTube video
+                            const videoId = file.url.split('v=')[1].split('&')[0];
                             resultHTML += `
                                 <iframe width="300" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                            `;
+                        } else if (file.type === "twitter") {
+                            // Embed Twitter/X video
+                            resultHTML += `
+                                <blockquote class="twitter-tweet">
+                                    <a href="${file.url}"></a>
+                                </blockquote>
                             `;
                         } else {
                             resultHTML += `<p>File: ${file.name}</p>`;
                         }
 
+                        // Add file name and download link
                         resultHTML += `
                             <p>${file.name}</p>
                             <a href="${file.url}" download>Download</a>
@@ -58,6 +66,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Add the result to the container
                         resultsContainer.innerHTML += resultHTML;
                     });
+
+                    // Ensure Twitter's embed script is loaded
+                    if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
+                        const twitterScript = document.createElement('script');
+                        twitterScript.src = "https://platform.twitter.com/widgets.js";
+                        twitterScript.async = true;
+                        twitterScript.charset = "utf-8";
+                        document.body.appendChild(twitterScript);
+                    }
                 }
             })
             .catch(error => {
@@ -66,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     };
 
-    // Display results based on the current query (if any)
+    // Display results based on the current query
     if (searchQuery) {
         fetchAndDisplayResults(searchQuery);
     }
