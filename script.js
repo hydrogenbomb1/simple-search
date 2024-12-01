@@ -18,9 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Split the search query into individual tags
                     const searchTags = query.toLowerCase().split(' ').filter(tag => tag.trim() !== '');
 
-                    // Filter files that match all tags
+                    // Filter files that have **any** of the tags in the query
                     const filteredFiles = data.filter(file =>
-                        searchTags.every(tag => file.tags.some(fileTag => fileTag.toLowerCase().includes(tag)))
+                        searchTags.some(tag => file.tags.some(fileTag => fileTag.toLowerCase().includes(tag)))
                     );
 
                     if (filteredFiles.length === 0) {
