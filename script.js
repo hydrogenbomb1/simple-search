@@ -20,11 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Filter files that match any of the tags
                     const filteredFiles = data.filter(file => {
-                        const matches = searchTags.some(tag => 
+                        return searchTags.some(tag => 
                             file.tags.some(fileTag => fileTag.toLowerCase().includes(tag))
                         );
-                        console.log(`Checking file: ${file.name}, Matches: ${matches}`); // Debugging
-                        return matches;
                     });
 
                     if (filteredFiles.length === 0) {
@@ -48,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <iframe width="300" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
                             `;
                         } else if (file.type === "twitter") {
-                            console.log(`Embedding Twitter URL: ${file.url}`); // Debugging
+                            console.log(`Embedding Twitter URL: ${file.url}`);
                             resultHTML += `
                                 <blockquote class="twitter-tweet">
                                     <a href="${file.url}"></a>
@@ -68,8 +66,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         resultsContainer.innerHTML += resultHTML;
                     });
 
-                    // Ensure Twitter's embed script is loaded
-                    if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
+                    // Ensure Twitter's embed script runs
+                    if (window.twttr && window.twttr.widgets) {
+                        window.twttr.widgets.load(); // Reload widgets to render tweets
+                        console.log("Twitter widgets reloaded");
+                    } else {
                         const twitterScript = document.createElement('script');
                         twitterScript.src = "https://platform.twitter.com/widgets.js";
                         twitterScript.async = true;
