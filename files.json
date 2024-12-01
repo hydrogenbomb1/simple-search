@@ -22,5 +22,11 @@
       "url": "files/lemontree.txt",
       "tags": ["music", "lyrics", "txt"],
       "type": "file"
+    },
+    {
+      "name": "Lemon Tree (Lemon Dance Radio Edit)",
+      "url": "https://www.youtube.com/watch?v=HpzAKjxQxUQ",
+      "tags": ["music", "lemon_tree", "youtube"],
+      "type": "youtube"
     }
   ]

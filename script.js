@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
-        fetch('files.json')
+        fetch('files.json')  // Fetch the files.json data
             .then(response => response.json())
             .then(data => {
                 resultsContainer.innerHTML = ''; // Clear previous results
@@ -35,11 +35,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         let resultHTML = `<div class="file-result">`;
 
                         if (file.type === "image") {
-                            resultHTML += `<img src="${file.url}" alt="${file.name}">`;
+                            resultHTML += `<img src="${file.url}" alt="${file.name}" style="max-width: 100%; height: auto;">`;
                         } else if (file.type === "audio") {
                             resultHTML += `<audio controls src="${file.url}"></audio>`;
                         } else if (file.type === "video") {
                             resultHTML += `<video controls width="300" src="${file.url}"></video>`;
+                        } else if (file.type === "youtube") {
+                            // For YouTube videos, embed the YouTube player
+                            const videoId = file.url.split('v=')[1].split('&')[0]; // Extract video ID from the URL
+                            resultHTML += `
+                                <iframe width="300" height="200" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                            `;
                         } else {
                             resultHTML += `<p>File: ${file.name}</p>`;
                         }
@@ -49,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <a href="${file.url}" download>Download</a>
                         </div>`;
 
+                        // Add the result to the container
                         resultsContainer.innerHTML += resultHTML;
                     });
                 }
@@ -59,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     };
 
-    // Display results based on the current query
+    // Display results based on the current query (if any)
     if (searchQuery) {
         fetchAndDisplayResults(searchQuery);
     }
