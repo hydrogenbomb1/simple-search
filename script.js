@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
+                console.log('Data fetched successfully:', data); // Debugging
                 resultsContainer.innerHTML = ''; // Clear previous results
 
                 if (data && Array.isArray(data)) {
@@ -94,6 +95,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         window.twttr.widgets.load();
                         console.log("Twitter widgets reloaded");
                     };
+                } else {
+                    resultsContainer.innerHTML = '<p>Error: No valid data in files.json</p>';
                 }
             })
             .catch(error => {
