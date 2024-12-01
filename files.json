@@ -35,16 +35,16 @@
       "tags": ["out_of_context", "spongebob", "twitter", "dub"],
       "type": "twitter"
     },
-  {
-    "name": "Bro was NOT having it",
-    "url": "videos/redshell1.mp4",
-    "tags": ["short", "redshell", "youtube", "funny"],
-    "type": "youtube"
-  },
-  {
-    "name": "The Minecraft movie looks BAD",
-    "url": "videos/redshell2.mp4",
-    "tags": ["short", "redshell", "youtube", "funny"],
-    "type": "youtube"
-  }
+    {
+      "name": "Bro was NOT having it",
+      "url": "videos/redshell1.mp4",
+      "tags": ["short", "redshell", "youtube", "funny"],
+      "type": "youtube"
+    },
+    {
+      "name": "The Minecraft movie looks BAD",
+      "url": "videos/redshell2.mp4",
+      "tags": ["short", "redshell", "youtube", "funny"],
+      "type": "youtube"
+    }
   ]
