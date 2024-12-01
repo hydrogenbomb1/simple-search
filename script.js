@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Filter files that have **any** of the tags in the query
                     const filteredFiles = data.filter(file =>
-                        searchTags.some(tag => file.tags.some(fileTag => fileTag.toLowerCase().includes(tag)))
+                        searchTags.some(tag => 
+                            file.tags.some(fileTag => fileTag.toLowerCase().includes(tag))
+                        )
                     );
 
                     if (filteredFiles.length === 0) {
