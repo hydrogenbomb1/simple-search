@@ -1,64 +1,73 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const searchQuery = new URLSearchParams(window.location.search).get('query') || '';
     const searchBar = document.getElementById('search-bar');
+    const resultsContainer = document.getElementById('results');
+    const queryParams = new URLSearchParams(window.location.search);
+    const searchQuery = queryParams.get('query') || '';
+
+    // Set the search bar to the current query
     searchBar.value = searchQuery;
 
-    // Handle new search form submissions
-    const newSearchForm = document.getElementById('new-search-form');
-    newSearchForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent default form submission behavior
-        const newQuery = searchBar.value.trim();
-        if (newQuery) {
-            // Update the query in the URL and reload the results
-            window.location.href = `results.html?query=${encodeURIComponent(newQuery)}`;
-        }
-    });
-
     // Function to fetch and display results
-    function displayResults(query) {
+    const fetchAndDisplayResults = (query) => {
         fetch('files.json')
             .then(response => response.json())
             .then(data => {
-                if (data && Array.isArray(data)) {
-                    const resultsContainer = document.getElementById('results');
-                    resultsContainer.innerHTML = ''; // Clear previous results
+                resultsContainer.innerHTML = ''; // Clear previous results
 
-                    // Filter data based on the search query
+                if (data && Array.isArray(data)) {
+                    // Filter results based on the search query
                     const filteredFiles = data.filter(file =>
                         file.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
                     );
 
                     if (filteredFiles.length === 0) {
                         resultsContainer.innerHTML = '<p>No results found.</p>';
-                    } else {
-                        // Display filtered results
-                        filteredFiles.forEach(file => {
-                            let fileElement = `<div class="file-result">`;
-
-                            // Render different content based on file type
-                            if (file.type === "image") {
-                                fileElement += `<img src="${file.url}" alt="${file.name}">`;
-                            } else if (file.type === "audio") {
-                                fileElement += `<audio controls src="${file.url}"></audio>`;
-                            } else if (file.type === "video") {
-                                fileElement += `<video controls width="300" src="${file.url}"></video>`;
-                            }
-
-                            // Add file details and download link
-                            fileElement += `
-                                <p>${file.name}</p>
-                                <a href="${file.url}" download>Download</a>
-                            </div>`;
-                            resultsContainer.innerHTML += fileElement;
-                        });
+                        return;
                     }
+
+                    // Render each result
+                    filteredFiles.forEach(file => {
+                        let resultHTML = `<div class="file-result">`;
+
+                        if (file.type === "image") {
+                            resultHTML += `<img src="${file.url}" alt="${file.name}">`;
+                        } else if (file.type === "audio") {
+                            resultHTML += `<audio controls src="${file.url}"></audio>`;
+                        } else if (file.type === "video") {
+                            resultHTML += `<video controls width="300" src="${file.url}"></video>`;
+                        } else {
+                            resultHTML += `<p>File: ${file.name}</p>`;
+                        }
+
+                        resultHTML += `
+                            <p>${file.name}</p>
+                            <a href="${file.url}" download>Download</a>
+                        </div>`;
+
+                        resultsContainer.innerHTML += resultHTML;
+                    });
                 }
             })
-            .catch(error => console.error('Error fetching files.json:', error));
+            .catch(error => {
+                console.error('Error fetching files.json:', error);
+                resultsContainer.innerHTML = '<p>Error loading results.</p>';
+            });
+    };
+
+    // Fetch and display results for the current query
+    if (searchQuery) {
+        fetchAndDisplayResults(searchQuery);
     }
 
-    // Display results based on the current query
-    if (searchQuery) {
-        displayResults(searchQuery);
-    }
+    // Handle new search submissions
+    document.getElementById('new-search-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const newQuery = searchBar.value.trim();
+
+        if (newQuery) {
+            // Update the URL with the new query and reload results
+            window.history.pushState({}, '', `results.html?query=${encodeURIComponent(newQuery)}`);
+            fetchAndDisplayResults(newQuery);
+        }
+    });
 });
