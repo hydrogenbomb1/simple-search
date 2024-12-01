@@ -7,35 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set the search bar to the current query
     searchBar.value = searchQuery;
 
-    // Function to load Twitter widgets.js script immediately
-    function loadTwitterScript() {
-        console.log("Checking if Twitter script is loaded...");
-        const existingScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
-        if (!existingScript) {
-            console.log("Twitter script not found, loading...");
-            const twitterScript = document.createElement('script');
-            twitterScript.src = "https://platform.twitter.com/widgets.js";
-            twitterScript.async = true;
-            twitterScript.charset = "utf-8";
-            document.body.appendChild(twitterScript);
-            twitterScript.onload = function() {
-                console.log("Twitter script loaded successfully!");
-                // Manually trigger Twitter widgets load after script is loaded
-                if (window.twttr && window.twttr.widgets) {
-                    window.twttr.widgets.load();
-                    console.log("Twitter widgets manually reloaded");
-                }
-            };
-        } else {
-            console.log("Twitter script already loaded");
-            // If the script is already loaded, manually trigger Twitter widgets load
-            if (window.twttr && window.twttr.widgets) {
-                window.twttr.widgets.load();
-                console.log("Twitter widgets reloaded from existing script");
-            }
-        }
-    }
-
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
         fetch('files.json')  // Fetch the JSON data
@@ -88,11 +59,26 @@ document.addEventListener('DOMContentLoaded', function () {
                         } else if (file.type === "twitter") {
                             console.log(`Embedding Twitter URL: ${file.url}`);
                             if (file.url.includes('x.com')) {
-                                resultHTML += `
-                                    <blockquote class="twitter-tweet">
-                                        <a href="${file.url}"></a>
-                                    </blockquote>
-                                `;
+                                // Extract username and tweet_id from the URL
+                                const urlParts = file.url.split('/'); // Split the URL by '/'
+                                const username = urlParts[urlParts.length - 2]; // Get the username
+                                const tweetId = urlParts[urlParts.length - 1]; // Get the tweet ID
+
+                                // Construct the correct oEmbed API URL
+                                const oEmbedUrl = `https://publish.twitter.com/oembed?url=https://x.com/${username}/status/${tweetId}`;
+
+                                // Fetch the oEmbed HTML for the tweet
+                                fetch(oEmbedUrl)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        resultHTML += data.html;
+                                        resultsContainer.innerHTML += resultHTML; // Add tweet to results
+                                        console.log("Tweet embedded successfully");
+                                    })
+                                    .catch(error => {
+                                        console.error("Error embedding tweet:", error);
+                                    });
+                                return; // Stop further processing for this result
                             } else {
                                 console.log("Invalid Twitter URL:", file.url);
                                 resultHTML += `<p>Invalid Twitter URL: ${file.url}</p>`;
@@ -107,12 +93,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <a href="${file.url}" download>Download</a>
                         </div>`;
 
-                        // Add the result to the container
-                        resultsContainer.innerHTML += resultHTML;
+                        // Add the result to the container (will be added after tweet HTML is embedded)
+                        if (!file.url.includes('x.com')) {
+                            resultsContainer.innerHTML += resultHTML;
+                        }
                     });
-
-                    // Load Twitter script to ensure it's ready for embedding tweets
-                    loadTwitterScript();
                 } else {
                     resultsContainer.innerHTML = '<p>Error: No valid data in files.json</p>';
                 }
@@ -139,7 +124,4 @@ document.addEventListener('DOMContentLoaded', function () {
             fetchAndDisplayResults(newQuery);
         }
     });
-
-    // Load the Twitter script as soon as the page loads
-    loadTwitterScript();
 });
