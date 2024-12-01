@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // After loading the script, ensure the widgets are rendered
                     twitterScript.onload = function() {
-                        window.twttr.widgets.load();
+                        window.twttr.widgets.load(); // Re-trigger Twitter widget load
                         console.log("Twitter widgets reloaded");
                     };
                 } else {
