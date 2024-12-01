@@ -1,0 +1,26 @@
+[
+    {
+      "name": "europe",
+      "url": "images/europe.jpg",
+      "tags": ["europe", "map"],
+      "type": "image"
+    },
+    {
+      "name": "Clubstep",
+      "url": "audio/Clubstep.mp3",
+      "tags": ["mashup", "geometry_dash", "clubstep"],
+      "type": "audio"
+    },
+    {
+      "name": "Random Vid",
+      "url": "videos/youtube-B7-_hb28Wmk.mp4",
+      "tags": ["youtube", "edging", "funny"],
+      "type": "video"
+    },
+    {
+      "name": "Lemon Tree Lyrics",
+      "url": "files/lemontree.txt",
+      "tags": ["music", "lyrics", "txt"],
+      "type": "file"
+    }
+  ]
