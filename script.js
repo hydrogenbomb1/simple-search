@@ -3,7 +3,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchBar = document.getElementById('search-bar');
     searchBar.value = searchQuery;
 
-    // Fetch files.json data
+    // Handle new search form submissions
+    const newSearchForm = document.getElementById('new-search-form');
+    newSearchForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent form submission reload
+        const newQuery = searchBar.value.trim();
+        if (newQuery) {
+            // Redirect with the new search query
+            window.location.href = `results.html?query=${encodeURIComponent(newQuery)}`;
+        }
+    });
+
+    // Fetch files.json data and display results
     fetch('files.json')
         .then(response => response.json())
         .then(data => {

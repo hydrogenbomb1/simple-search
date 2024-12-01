@@ -9,7 +9,10 @@
 <body>
     <div class="container">
         <h1>Search Results</h1>
-        <input type="text" id="search-bar" placeholder="Search again..." />
+        <form id="new-search-form" action="results.html" method="get">
+            <input type="text" id="search-bar" name="query" placeholder="Search again..." required />
+            <button type="submit">Search</button>
+        </form>
         <div id="results"></div>
     </div>
     <script src="script.js"></script>
