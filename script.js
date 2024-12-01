@@ -7,17 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set the search bar to the current query
     searchBar.value = searchQuery;
 
-    // Load Twitter widgets script early to ensure it's ready
-    let twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
-    if (!twitterScript) {
-        twitterScript = document.createElement('script');
-        twitterScript.src = "https://platform.twitter.com/widgets.js";
-        twitterScript.async = true;
-        twitterScript.charset = "utf-8";
-        document.body.appendChild(twitterScript);
-        console.log("Twitter script loaded early");
-    }
-
     // Function to fetch and display results
     const fetchAndDisplayResults = (query) => {
         fetch('files.json')  // Fetch the JSON data
@@ -93,11 +82,24 @@ document.addEventListener('DOMContentLoaded', function () {
                         resultsContainer.innerHTML += resultHTML;
                     });
 
-                    // Ensure Twitter's embed script is loaded after content is added
-                    twitterScript.onload = function() {
-                        window.twttr.widgets.load();
-                        console.log("Twitter widgets reloaded");
-                    };
+                    // Dynamically load the Twitter widget script if not already loaded
+                    if (!document.querySelector('script[src="https://platform.twitter.com/widgets.js"]')) {
+                        const twitterScript = document.createElement('script');
+                        twitterScript.src = "https://platform.twitter.com/widgets.js";
+                        twitterScript.async = true;
+                        twitterScript.charset = "utf-8";
+                        document.body.appendChild(twitterScript);
+                        console.log("Twitter script loaded");
+                    }
+
+                    // After the Twitter script is loaded, call the load method
+                    const twitterScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
+                    if (twitterScript) {
+                        twitterScript.onload = function() {
+                            window.twttr.widgets.load();
+                            console.log("Twitter widgets reloaded");
+                        };
+                    }
                 } else {
                     resultsContainer.innerHTML = '<p>Error: No valid data in files.json</p>';
                 }
